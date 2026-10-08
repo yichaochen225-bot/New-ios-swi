@@ -1,0 +1,39 @@
+name: Studio Worker Validation
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'studio/**'
+      - '.github/workflows/studio-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'studio/**'
+      - '.github/workflows/studio-ci.yml'
+permissions:
+  contents: read
+jobs:
+  studio-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify JavaScript syntax
+        run: node --check studio/worker.mjs
+      - name: Smoke test HTML and read-only API
+        run: |
+          node --input-type=module <<'NODE'
+          import worker from './studio/worker.mjs';
+          import assert from 'node:assert/strict';
+          const health = await worker.fetch(new Request('https://example.org/api/health'));
+          assert.equal(health.status, 200);
+          assert.equal((await health.json()).mode, 'read-only');
+          const page = await worker.fetch(new Request('https://example.org/'));
+          assert.equal(page.status, 200);
+          assert.match(await page.text(), /SwiftUI Studio/);
+          const post = await worker.fetch(new Request('https://example.org/', {method:'POST'}));
+          assert.equal(post.status, 405);
+          const bad = await worker.fetch(new Request('https://example.org/api/file?path=.env'));
+          assert.equal(bad.status, 400);
+          console.log('Studio health, HTML, request-method and file allowlist smoke tests passed');
+          NODE
