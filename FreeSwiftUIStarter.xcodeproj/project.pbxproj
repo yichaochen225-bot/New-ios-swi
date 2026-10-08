@@ -6,13 +6,15 @@
  objects = {
   A10000000000000000000001 = { isa = PBXBuildFile; fileRef = A20000000000000000000001; };
   A10000000000000000000002 = { isa = PBXBuildFile; fileRef = A20000000000000000000002; };
+  A10000000000000000000004 = { isa = PBXBuildFile; fileRef = A20000000000000000000004; };
   A20000000000000000000001 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSwiftUIStarterApp.swift; sourceTree = "<group>"; };
   A20000000000000000000002 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+  A20000000000000000000004 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoEngine.swift; sourceTree = "<group>"; };
   A20000000000000000000003 = { isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FreeSwiftUIStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
   A40000000000000000000001 = { isa = PBXGroup; children = (A40000000000000000000002, A40000000000000000000003); sourceTree = "<group>"; };
-  A40000000000000000000002 = { isa = PBXGroup; children = (A20000000000000000000001, A20000000000000000000002); path = FreeSwiftUIStarter; sourceTree = "<group>"; };
+  A40000000000000000000002 = { isa = PBXGroup; children = (A20000000000000000000001, A20000000000000000000002, A20000000000000000000004); path = FreeSwiftUIStarter; sourceTree = "<group>"; };
   A40000000000000000000003 = { isa = PBXGroup; children = (A20000000000000000000003); name = Products; sourceTree = "<group>"; };
-  A30000000000000000000002 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000002); runOnlyForDeploymentPostprocessing = 0; };
+  A30000000000000000000002 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001, A10000000000000000000002, A10000000000000000000004); runOnlyForDeploymentPostprocessing = 0; };
   A50000000000000000000001 = {
    isa = PBXNativeTarget;
    buildConfigurationList = A80000000000000000000002;
@@ -61,7 +63,7 @@
     CODE_SIGN_STYLE = Automatic;
     CURRENT_PROJECT_VERSION = 1;
     GENERATE_INFOPLIST_FILE = YES;
-    INFOPLIST_KEY_CFBundleDisplayName = "SwiftUI Cloud";
+    INFOPLIST_KEY_CFBundleDisplayName = "双人围棋";
     INFOPLIST_KEY_UILaunchScreen_Generation = YES;
     IPHONEOS_DEPLOYMENT_TARGET = 17.0;
     LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
@@ -77,7 +79,7 @@
     CODE_SIGN_STYLE = Automatic;
     CURRENT_PROJECT_VERSION = 1;
     GENERATE_INFOPLIST_FILE = YES;
-    INFOPLIST_KEY_CFBundleDisplayName = "SwiftUI Cloud";
+    INFOPLIST_KEY_CFBundleDisplayName = "双人围棋";
     INFOPLIST_KEY_UILaunchScreen_Generation = YES;
     IPHONEOS_DEPLOYMENT_TARGET = 17.0;
     LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");

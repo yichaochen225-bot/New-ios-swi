@@ -39,6 +39,8 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
           xcodebuild -version
           xcrun simctl list runtimes
+      - name: Test Go rules (capture, ko, suicide, scoring, undo)
+        run: bash scripts/test-go-rules.sh
       - name: Build unsigned iOS Simulator app
         run: |
           set -o pipefail
