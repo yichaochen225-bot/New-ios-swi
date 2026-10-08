@@ -45,8 +45,8 @@ jobs:
         run: |
           mkdir -p output
           ditto -c -k --sequesterRsrc --keepParent "$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator/FreeSwiftUIStarter.app" output/FreeSwiftUIStarter-SIMULATOR-ONLY.zip
-      - name: Optional simulator smoke test and screenshot
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.simulator_smoke_test }}
+      - name: Simulator smoke test and screenshot (PR or manual opt-in)
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.simulator_smoke_test) }}
         env:
           APP_PATH: ${{ runner.temp }}/DerivedData/Build/Products/Debug-iphonesimulator/FreeSwiftUIStarter.app
         run: bash scripts/simulator-smoke-test.sh
