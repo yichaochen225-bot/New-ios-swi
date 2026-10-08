@@ -1,0 +1,60 @@
+name: Free SwiftUI Cloud Xcode Build
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'FreeSwiftUIStarter/**'
+      - 'FreeSwiftUIStarter.xcodeproj/**'
+      - '.github/workflows/ios-ci.yml'
+      - 'scripts/**'
+  push:
+    branches: [main]
+    paths:
+      - 'FreeSwiftUIStarter/**'
+      - 'FreeSwiftUIStarter.xcodeproj/**'
+      - '.github/workflows/ios-ci.yml'
+      - 'scripts/**'
+  workflow_dispatch:
+    inputs:
+      simulator_smoke_test:
+        description: 'Start an iPhone simulator and take a screenshot (slower)'
+        type: boolean
+        required: false
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: swiftui-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ios-build:
+    runs-on: macos-26
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select stable Xcode 26.6
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
+          xcodebuild -version
+          xcrun simctl list runtimes
+      - name: Build unsigned iOS Simulator app
+        run: |
+          set -o pipefail
+          xcodebuild -project FreeSwiftUIStarter.xcodeproj -scheme FreeSwiftUIStarter -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/DerivedData" CODE_SIGNING_ALLOWED=NO build
+      - name: Save app for simulator
+        run: |
+          mkdir -p output
+          ditto -c -k --sequesterRsrc --keepParent "$RUNNER_TEMP/DerivedData/Build/Products/Debug-iphonesimulator/FreeSwiftUIStarter.app" output/FreeSwiftUIStarter-SIMULATOR-ONLY.zip
+      - name: Optional simulator smoke test and screenshot
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.simulator_smoke_test }}
+        env:
+          APP_PATH: ${{ runner.temp }}/DerivedData/Build/Products/Debug-iphonesimulator/FreeSwiftUIStarter.app
+        run: bash scripts/simulator-smoke-test.sh
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-swiftui-build
+          path: output/
+          if-no-files-found: warn
+          retention-days: 2
