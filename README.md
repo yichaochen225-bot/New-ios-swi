@@ -29,3 +29,14 @@
 - `scripts/simulator-smoke-test.sh`: PR 自动运行 / 手动触发的模拟器验收截图
 
 构建状态和截图需要在 Actions 运行后确认，不能仅凭源码判断成功。
+
+## 双人围棋（本地同屏游戏）
+
+当前 SwiftUI 应用已更新为 **对弈 · 围棋**：两位玩家共用 iPhone/iPad 轮流落子，支持 9/13/19 路、吃子、禁自杀、简单劫、虚着、认输、悔棋和自动保存。双方连续虚着后可协商标记死子，再按照简化中国数子法计分（白方贴 6.5 目）。没有 AI、在线联机或云端对局数据。
+
+- `FreeSwiftUIStarter/GoEngine.swift`：与 SwiftUI 解耦的纯 Swift 围棋规则、棋谱状态、终局数子。
+- `FreeSwiftUIStarter/ContentView.swift`：木色棋盘、双人状态卡、触控/拖动落子、菜单与计分视图。
+- `tests/GoRulesTests.swift`：提子、打劫、禁自杀、虚着、悔棋、数子、存储格式测试。
+- `scripts/test-go-rules.sh`：CI 内用 macOS Swift 编译器运行规则测试，随后编译原生 iOS App 并启动模拟器截图。
+
+真实 iPhone 安装仍受 Apple 签名机制限制：这里提供的是云端模拟器 App；若要在两台不同手机远程对战，需另行设计联网同步与鉴权。
