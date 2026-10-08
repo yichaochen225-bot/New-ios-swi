@@ -291,9 +291,9 @@ struct ContentView: View {
     private var scoreSummary: some View {
         let s = game.score()
         return HStack {
-            Text("黑 \(s.black.formatted(.number.precision(.fractionLength(1)))")
+            Text("黑 " + String(format: "%.1f", s.black))
             Spacer()
-            Text("白 \(s.white.formatted(.number.precision(.fractionLength(1)))")
+            Text("白 " + String(format: "%.1f", s.white))
         }
         .font(.system(size: 21, weight: .bold, design: .rounded))
         .foregroundStyle(GoPalette.accent)

@@ -58,7 +58,7 @@ struct GoGame: Codable {
     var lastAction = "黑方先行，点击交叉点落子"
     var markedDead: Set<Int> = []
     var history: [Snapshot] = []
-    let komi: Double = 6.5
+    var komi: Double = 6.5
 
     init(size: Int = 9) {
         self.size = [9, 13, 19].contains(size) ? size : 9
