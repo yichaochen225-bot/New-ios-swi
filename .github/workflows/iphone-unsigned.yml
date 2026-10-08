@@ -1,0 +1,54 @@
+name: Unsigned iPhone IPA (for local signing)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/iphone-unsigned.yml'
+      - 'FreeSwiftUIStarter/**'
+      - 'FreeSwiftUIStarter.xcodeproj/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: iphone-unsigned-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  iphone-unsigned:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select stable Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
+          xcodebuild -version
+      - name: Build native physical iPhone binary without signing
+        run: |
+          set -euo pipefail
+          xcodebuild -project FreeSwiftUIStarter.xcodeproj \
+            -scheme FreeSwiftUIStarter -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/iPhoneDerivedData" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+      - name: Package unsigned IPA for local signing
+        run: |
+          set -euo pipefail
+          APP="$RUNNER_TEMP/iPhoneDerivedData/Build/Products/Release-iphoneos/FreeSwiftUIStarter.app"
+          test -f "$APP/Info.plist"
+          test -f "$APP/FreeSwiftUIStarter"
+          echo 'Built native iPhone binary:'
+          file "$APP/FreeSwiftUIStarter"
+          mkdir -p output/Payload
+          ditto "$APP" output/Payload/FreeSwiftUIStarter.app
+          cd output
+          zip -qr -X Weiqi-iPhone-UNSIGNED.ipa Payload
+          rm -rf Payload
+          unzip -t Weiqi-iPhone-UNSIGNED.ipa
+          echo 'UNSIGNED IPA: must sign with your own Apple account on a trusted computer before installing.'
+      - name: Upload unsigned iPhone app
+        uses: actions/upload-artifact@v4
+        with:
+          name: Weiqi-iPhone-UNSIGNED-IPA
+          path: output/Weiqi-iPhone-UNSIGNED.ipa
+          if-no-files-found: error
+          retention-days: 7

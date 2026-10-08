@@ -8,6 +8,7 @@ on:
       - '.github/workflows/ios-ci.yml'
       - 'scripts/**'
       - 'studio/**'
+      - '.github/workflows/iphone-unsigned.yml'
   push:
     branches: [main]
     paths:
@@ -16,6 +17,7 @@ on:
       - '.github/workflows/ios-ci.yml'
       - 'scripts/**'
       - 'studio/**'
+      - '.github/workflows/iphone-unsigned.yml'
   workflow_dispatch:
     inputs:
       simulator_smoke_test:
